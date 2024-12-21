@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 require("dotenv").config();
 
 const app = express();
@@ -27,11 +27,23 @@ async function run() {
     await client.connect();
 
     const roomsCollection = client.db("roomsDB").collection("allRooms");
+    const bookingCollection = client.db("roomsDB").collection("bookings");
 
     // Endpoint to fetch all rooms
     app.get("/", async (req, res) => {
       const result = await roomsCollection.find().toArray();
       res.send(result);
+    });
+    app.get("/room/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await roomsCollection.findOne(query);
+      res.send(result);
+    });
+
+    app.post("/room/booking", async (req, res) => {
+      const newBooking = req.body;
+      console.log(newBooking);
     });
 
     console.log("Connected to MongoDB and API is ready!");
