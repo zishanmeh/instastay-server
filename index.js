@@ -43,7 +43,15 @@ async function run() {
 
     app.post("/room/booking", async (req, res) => {
       const newBooking = req.body;
-      console.log(newBooking);
+      const result = await bookingCollection.insertOne(newBooking);
+      res.send(result);
+    });
+    app.patch("/update-availability-false/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const updateDoc = { $set: { availability: false } };
+      const result = await roomsCollection.updateOne(query, updateDoc);
+      res.send(result);
     });
 
     console.log("Connected to MongoDB and API is ready!");
