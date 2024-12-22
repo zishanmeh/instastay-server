@@ -40,6 +40,12 @@ async function run() {
       const result = await roomsCollection.findOne(query);
       res.send(result);
     });
+    app.get("/bookings/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { userEmail: email };
+      const result = await bookingCollection.find(query).toArray();
+      res.send(result);
+    });
 
     app.post("/room/booking", async (req, res) => {
       const newBooking = req.body;
