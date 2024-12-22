@@ -28,6 +28,7 @@ async function run() {
 
     const roomsCollection = client.db("roomsDB").collection("allRooms");
     const bookingCollection = client.db("roomsDB").collection("bookings");
+    const reviewCollection = client.db("roomsDB").collection("reviews");
 
     // Endpoint to fetch all rooms
     app.get("/", async (req, res) => {
@@ -46,7 +47,7 @@ async function run() {
       const result = await bookingCollection.find(query).toArray();
       res.send(result);
     });
-
+    // Delete booking by id
     app.delete("/delete/booking/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
@@ -59,11 +60,31 @@ async function run() {
       const result = await bookingCollection.insertOne(newBooking);
       res.send(result);
     });
+    app.post("/review", async (req, res) => {
+      const newReview = req.body;
+      const result = await reviewCollection.insertOne(newReview);
+      res.send(result);
+    });
     app.patch("/update-availability-false/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const updateDoc = { $set: { availability: false } };
       const result = await roomsCollection.updateOne(query, updateDoc);
+      res.send(result);
+    });
+    app.patch("/update-availability-true/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const updateDoc = { $set: { availability: true } };
+      const result = await roomsCollection.updateOne(query, updateDoc);
+      res.send(result);
+    });
+    app.patch("/update-booking-date/:id", async (req, res) => {
+      const id = req.params.id;
+      const updatedDay = req.body;
+      const query = { _id: new ObjectId(id) };
+      const updateDoc = { $set: { booking_day: updatedDay.booking_day } };
+      const result = await bookingCollection.updateOne(query, updateDoc);
       res.send(result);
     });
 
