@@ -35,11 +35,23 @@ async function run() {
       const result = await roomsCollection.find().toArray();
       res.send(result);
     });
+    app.get("/roomsSortByPrice", async (req, res) => {
+      const result = await roomsCollection.find().sort({ price: 1 }).toArray();
+      res.send(result);
+    });
     app.get("/latestRoom", async (req, res) => {
       const result = await roomsCollection
         .find()
-        .sort({ _id: -1 }) // Sort by _id in descending order (newest first)
-        .limit(6) // Limit to 6 documents
+        .sort({ _id: -1 })
+        .limit(6)
+        .toArray();
+      res.send(result);
+    });
+    app.get("/latestReview", async (req, res) => {
+      const result = await reviewCollection
+        .find()
+        .sort({ _id: -1 })
+        .limit(6)
         .toArray();
       res.send(result);
     });
