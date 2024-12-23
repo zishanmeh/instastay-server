@@ -35,6 +35,14 @@ async function run() {
       const result = await roomsCollection.find().toArray();
       res.send(result);
     });
+    app.get("/latestRoom", async (req, res) => {
+      const result = await roomsCollection
+        .find()
+        .sort({ _id: -1 }) // Sort by _id in descending order (newest first)
+        .limit(6) // Limit to 6 documents
+        .toArray();
+      res.send(result);
+    });
     app.get("/room/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
@@ -45,6 +53,12 @@ async function run() {
       const email = req.query.email;
       const query = { userEmail: email };
       const result = await bookingCollection.find(query).toArray();
+      res.send(result);
+    });
+    app.get("/all-reviews", async (req, res) => {
+      const id = req.query.id;
+      const query = { roomId: id };
+      const result = await reviewCollection.find(query).toArray();
       res.send(result);
     });
     // Delete booking by id
