@@ -27,6 +27,7 @@ const verifyToken = (req, res, next) => {
       return res.status(401).send({ message: "Unauthorized access" });
     }
     req.user = decoded;
+    console.log(req.user);
     next();
   });
 };
@@ -86,6 +87,7 @@ async function run() {
     app.get("/room-bookings", verifyToken, async (req, res) => {
       const email = req.query.email;
       const query = { userEmail: email };
+
       if (req.user.email !== req.query.email) {
         return res.status(403).send({ message: "Forbidden access" });
       }
